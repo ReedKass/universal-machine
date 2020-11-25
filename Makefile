@@ -1,13 +1,3 @@
-# Makefile for locality (Comp 40 Assignment 3)
-# 
-# Includes build rules for a2test and ppmtrans.
-#
-# This Makefile is more verbose than necessary.  In each assignment
-# we will simplify the Makefile using more powerful syntax and implicit rules.
-#
-# Last updated: February 16, 2016
-
-
 ############## Variables ###############
 
 CC = gcc # The compiler being used
