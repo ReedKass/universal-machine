@@ -1,1 +1,139 @@
-Reed Kass-Mullet & Jerry Wang
+Comp 40 - HW6 
+Reed Kass-Mullet (rkassm01) and Jerry Wang (jwang35)
+November 17, 2020
+README
+
+We did not receive any help, or go to office hours. 
+
+We were able to follow our design almost perfectly. Our only significant
+change was that we removed the Load module as we realized that it was
+small enough to include as a few helper functions in our Run module, so we
+consolidated them into a single Run module. We also changed the location of
+some free and malloc commands to ensure there were no memory leaks in a few
+unforeseen edge cases.
+
+Architecture:
+Our UM will be broken down into four modules:
+Memory 
+      -   Controls how memory will be represented in our UM
+      -   Contains implementation of Memory struct
+      -   Contains implementation of the 4 memory specific commands
+Commands (includes Memory.h)
+      -    Contains the implementation of all 13 commands
+      -    Contains the wrapper functions for the 4 memory specific commands
+      -    All commands are "called" from this module
+Run  (includes Commands.h)
+      -	Initializes UM and runs commands taken from input file 
+      - Contains bitpack function to create words from input file
+      - Uses commands module to run each commands
+UM (includes Run.h)
+      - Contains the main executable
+      - Gets the filename of um commands to be run
+      - Calls run from Run Module
+
+
+How long does it take UM to run 50 million commands?
+
+It would take around 2.8 second to run 50 million commands. We extrapolated
+this from the number of commands run in midmark over the amount of time 
+it took. Midmark clocked in at 170,141,043 commands. The program took 
+around 9.5 seconds to complete, thus we can approximate that 50 million 
+commands would take around 2.8 seconds, however, it is important to note 
+that this number depends on which commands are called.
+
+Unit Testing:
+We wrote 14 Unit tests, with one being assumed to be correct (Addition). 
+Lab8 said this was allowed. 
+
+Halt-verbose.um
+Our halt-verbose test calls the halt command before a string of commands 
+which would print the word “Bad!” out to stdout, thus if the test runs
+with no output, it means the halt command was executed successfully.
+
+Output.um
+Loads 48 and 6 into two registers, then sums them and puts it into register 3.
+Tests output, if output(r3) is not equal to the sum of 48 and 6, then output 
+is incorrect. 
+* Assumed addition was correct, as allowed in lab8. 
+
+Add.um
+Our addition test added two values loaded into the registers, specifically, 
+it added 45 and 5, and then called output on the addition output register, 
+printing 2 if successful. (ASCII 50 is 2)
+
+Multiply()
+Our multiplication test loaded two values into the registers, 10 and 9, 
+thus out expected output was 90, or ‘Z’ ASCII.
+
+Division.um
+Our division test loaded two values into registers 1 and 2 
+respectively, 120 and 2. Then called divide, dividing 120 by 2. 
+The resulting output should be 60, or “<” in ASCII.
+
+nand.um
+Our nand test outputted the value created by nand from 49 & 51, we know 
+the expected output here, ‘1’, so we simply compared this with the output 
+value to verify that the operation was being performed successfully.
+
+cmov.um
+Our cmov test loads 57, 0, and 51, into registers 1, 2, and 3, respectively.
+Then, we call output on r3. Then we call cmov twice, with two different cases.
+In the first case, it does not fulfill the condition, so output r3 should 
+remain the same. In the second case, the condition is fulfilled, so output 
+r3 should contain the value of r1. 
+
+mapseg.um
+Our mapseg test was based on the principle of the mapped segment index being 
+returned, thus when we call map_seg we get a value representing its location 
+set in a register. We used this value added to something which would print 
+when given a ASCII value, and then verified that the output was what we 
+expected, that being ‘8’. Greater functionality of the mapseg function 
+is found in the sload, lprogram, and sstore tests where we actually use 
+the newly segmented memory
+
+sload.um
+Our sload test maps a new segment, then loads m[0][1] into r0. Because a newly
+mapped segment is initialized with 0s, r0 should be 0. We then add r3 an r0 
+together and view the output. The output should be 55, or “7” in ASCII, and 
+the test should not have a segmentation fault. 
+
+sstore.um
+Our sstore test loads in three values, 4, 0, and 105. We map_seg a new memory 
+segment, we store 105 in the first index of the new segment, we then load the
+first index of the new segment into a new register and output that register.
+If this output is ‘i’, ASCII 105, then we know our load and our store worked 
+correctly,
+
+Unmap.um 
+Our unmap test maps a new segment and loads a value 8 into the first index
+of the new segment. Then, that new segment is unmapped. Map segment is then 
+called again, and the value found at the first index of the new segment is 
+loaded into register 3. Then, the value in register 3 is summed with the 
+value in register 5, which is 85. We know our unmap works if the resulting 
+sum output is still 85 or “U” in ASCII, and not 93 or “\” in ASCII.
+
+input()
+Our input test is very simple, we load a value into the first register,
+then we call input with the destination set to the first register and 
+call output on the register. If the value printed is the original value,
+the test fails, but if the value printed matches the input we gave it, 
+then we know it was successful.
+
+lprogram()
+Our load program test was our most complicated. At a high level, our test
+revolves around a set of commands located at the end of the commands list
+which are out of order and don’t do anything on their own. We then map a
+segment, and load these three commands, a loadval, output, and halt, in
+a specific working order into that newly mapped segment. We then call
+load program on that new segment. If the program is loaded correctly,
+it should load that value, 75, output it, and halt in correct order.
+If the program is not loaded correctly, a previously set value will be 
+printed and we will know that the load was performed incorrectly.
+
+
+TIME SPENT:
+We likely spent 1-2 hours analyzing the assignment
+We likely spent 3 hours on our Design
+We likely spent 4-5 hours on Unit Tests
+We likely spent 1.5 hours on notation
+We likely spent 12 hours on implementation.
